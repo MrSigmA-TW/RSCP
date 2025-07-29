@@ -1,6 +1,6 @@
 
 
-# Uncle Red and "her" Chinese Police (RSCP for short)
+# Uncle Red and "her" Chinese Police (URCP for short)
 
 ## 目前目標
 * 加入角色貼圖(Uncle Red & Chinese Police)
