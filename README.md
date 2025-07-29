@@ -1,9 +1,9 @@
 
 
-# Red Sister and her China Police (RSCP for short)
+# Uncle Red and "her" Chinese Police (RSCP for short)
 
 ## 目前目標
-* 加入角色貼圖(Red Sister & China Police)
+* 加入角色貼圖(Uncle Red & Chinese Police)
 * 移植到更多平台(apple, android...etc)
 * 完善遊戲內容(關卡選擇, 劇情, 特效, MEMEs...etc)
 
