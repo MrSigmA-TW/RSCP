@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
+<head> 
+    <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>時影雙行 — Shadow of Mine</title>
     <link rel="stylesheet" href="style.css">
@@ -552,6 +552,8 @@
         function startGame() {
             const startScreen = document.getElementById('startScreen');
             startScreen.style.display = 'none';
+            // 初始化音效系統
+            initAudio();
             // 初始化遊戲
             initGame();
         }
@@ -575,6 +577,9 @@
         function initAudio() {
             audio.bgm.loop = true;
             audio.bgm.volume = 0.5;
+            // 預設開啟音樂
+            audio.bgm.play();
+            document.getElementById('bgmBtn').textContent = '音樂：開';
         }
 
         function toggleBGM() {
@@ -1279,16 +1284,23 @@
             level.enemies.forEach(enemy => enemy.update());
         }
 
-        // 主遊戲循環
-        function gameLoop() {
-            updatePlayer();
-            updateEchoes();
-            updateMovingPlatforms();
-            updateEnemies();
-            checkSwitchActivation();
-            checkEnemyCollisions();
-            draw();
-            updateUI();
+        // 主遊戲循環 - 固定60FPS
+        let lastFrameTime = 0;
+        const TARGET_FPS = 60;
+        const FRAME_INTERVAL = 1000 / TARGET_FPS;
+        
+        function gameLoop(currentTime) {
+            if (currentTime - lastFrameTime >= FRAME_INTERVAL) {
+                updatePlayer();
+                updateEchoes();
+                updateMovingPlatforms();
+                updateEnemies();
+                checkSwitchActivation();
+                checkEnemyCollisions();
+                draw();
+                updateUI();
+                lastFrameTime = currentTime;
+            }
             requestAnimationFrame(gameLoop);
         }
         
@@ -1334,7 +1346,7 @@
         resizeCanvas();
         
         // 開始遊戲
-        gameLoop();
+        gameLoop(0);
     </script>
 </body>
 </html>
