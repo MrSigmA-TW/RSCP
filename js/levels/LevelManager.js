@@ -254,6 +254,7 @@ export class LevelManager {
         if (this.gameEngine.player && this.levelData.playerStart) {
             this.gameEngine.player.x = this.levelData.playerStart.x;
             this.gameEngine.player.y = this.levelData.playerStart.y;
+            console.log(`🗺️ 設置玩家位置: (${this.gameEngine.player.x}, ${this.gameEngine.player.y})`);
         }
     }
 

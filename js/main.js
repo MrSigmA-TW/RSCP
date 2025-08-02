@@ -3,7 +3,7 @@ import { GameEngine } from './core/GameEngine.js';
 import { UIManager } from './ui/UIManager.js';
 import { AudioManager } from './audio/AudioManager.js';
 import { SaveManager } from './save/SaveManager.js';
-
+// InputHandler 由 GameEngine 管理，不需要在這裡導入
 class EchoTrailGame {
     constructor() {
         this.gameEngine = null;
@@ -83,20 +83,41 @@ class EchoTrailGame {
         const menuBtn = document.getElementById('menu');
 
         if (createEchoBtn) {
-            createEchoBtn.addEventListener('click', () => this.gameEngine.createEcho());
+            createEchoBtn.addEventListener('click', () => {
+                if (this.gameEngine && this.gameEngine.isGameActive()) {
+                    try {
+                        this.gameEngine.createEcho();
+                    } catch (error) {
+                        console.error('❌ 創建殘影失敗:', error);
+                    }
+                }
+            });
         }
 
         if (interactBtn) {
-            interactBtn.addEventListener('click', () => this.gameEngine.interact());
+            interactBtn.addEventListener('click', () => {
+                if (this.gameEngine && this.gameEngine.isGameActive()) {
+                    try {
+                        this.gameEngine.interact();
+                    } catch (error) {
+                        console.error('❌ 互動失敗:', error);
+                    }
+                }
+            });
         }
 
         if (menuBtn) {
-            menuBtn.addEventListener('click', () => this.showGameMenu());
+            menuBtn.addEventListener('click', () => {
+                try {
+                    this.showGameMenu();
+                } catch (error) {
+                    console.error('❌ 顯示選單失敗:', error);
+                }
+            });
         }
 
-        // 鍵盤事件 - 只在遊戲畫面時處理
-        document.addEventListener('keydown', (e) => this.handleKeyDown(e));
-        document.addEventListener('keyup', (e) => this.handleKeyUp(e));
+        // 全域鍵盤事件 - 只處理全局快捷鍵，避免與 InputHandler 衝突
+        document.addEventListener('keydown', (e) => this.handleGlobalKeyDown(e));
 
         // 視窗事件
         window.addEventListener('resize', () => this.handleResize());
@@ -144,6 +165,9 @@ class EchoTrailGame {
             // 開始第一章
             await this.gameEngine.startChapter(1);
             
+            // 更新按鈕狀態
+            this.updateButtonStates();
+            
             this.uiManager.hideLoadingScreen();
             
         } catch (error) {
@@ -162,6 +186,7 @@ class EchoTrailGame {
                 this.uiManager.showLoadingScreen('正在載入進度...');
                 await this.uiManager.switchScreen('game-screen');
                 await this.gameEngine.loadGameState(saveData);
+                this.updateButtonStates();
                 this.uiManager.hideLoadingScreen();
             } else {
                 this.uiManager.showMessage('沒有找到存檔');
@@ -187,15 +212,37 @@ class EchoTrailGame {
 
     showGameMenu() {
         console.log('📋 顯示遊戲選單');
-        this.uiManager.showGameMenu();
+        if (this.uiManager) {
+            this.uiManager.showGameMenu();
+        }
     }
 
-    handleKeyDown(event) {
+    // 按鈕狀態管理
+    updateButtonStates() {
+        const createEchoBtn = document.getElementById('create-echo');
+        const interactBtn = document.getElementById('interact');
+        const menuBtn = document.getElementById('menu');
+
+        const isGameActive = this.gameEngine && this.gameEngine.isGameActive();
+        const isGamePaused = this.gameEngine && this.gameEngine.gameState.isPaused;
+
+        if (createEchoBtn) {
+            createEchoBtn.disabled = !isGameActive || isGamePaused;
+        }
+        if (interactBtn) {
+            interactBtn.disabled = !isGameActive || isGamePaused;
+        }
+        if (menuBtn) {
+            menuBtn.disabled = !isGameActive;
+        }
+    }
+
+    handleGlobalKeyDown(event) {
         if (!this.isInitialized) return;
 
         const key = event.key.toLowerCase();
         
-        // 全域快捷鍵
+        // 只處理全域快捷鍵，避免與 InputHandler 和 UIManager 衝突
         switch (key) {
             case 'escape':
                 event.preventDefault();
@@ -210,20 +257,6 @@ class EchoTrailGame {
                 event.preventDefault();
                 this.toggleFullscreen();
                 break;
-        }
-
-        // 遊戲內快捷鍵 - 讓 InputHandler 處理
-        if (this.uiManager.currentScreen === 'game-screen' && this.gameEngine && this.gameEngine.inputHandler) {
-            // InputHandler 已經有自己的事件監聽器，不需要重複處理
-            // 這裡只處理全局快捷鍵
-        }
-    }
-
-    handleKeyUp(event) {
-        if (!this.isInitialized) return;
-        
-        if (this.uiManager.currentScreen === 'game-screen' && this.gameEngine && this.gameEngine.inputHandler) {
-            // InputHandler 已經有自己的事件監聽器，不需要重複處理
         }
     }
 

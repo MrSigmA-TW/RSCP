@@ -74,20 +74,16 @@ export class UIManager {
     }
 
     setupEventListeners() {
-        // 畫布點擊事件
-        const canvas = document.getElementById('game-canvas');
-        if (canvas) {
-            canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
-            canvas.addEventListener('mousemove', (e) => this.handleCanvasMouseMove(e));
-        }
-        
         // 對話框點擊事件
         if (this.elements.dialogueBox) {
             this.elements.dialogueBox.addEventListener('click', () => this.advanceDialogue());
         }
         
-        // 鍵盤事件
-        document.addEventListener('keydown', (e) => this.handleKeyDown(e));
+        // UI 專用鍵盤事件 - 只處理對話相關
+        document.addEventListener('keydown', (e) => this.handleUIKeyDown(e));
+        
+        // 注意：Canvas 點擊事件由 InputHandler 統一處理，避免重複
+        // 移除重複的 Canvas 事件監聽器以避免衝突
     }
 
     initDialogueSystem() {
@@ -497,7 +493,8 @@ export class UIManager {
         canvas.style.cursor = cursor;
     }
 
-    handleKeyDown(event) {
+    handleUIKeyDown(event) {
+        // 只處理 UI 相關的鍵盤事件，避免與其他系統衝突
         if (this.isDialogueActive) {
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();

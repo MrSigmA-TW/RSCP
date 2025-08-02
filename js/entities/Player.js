@@ -51,8 +51,16 @@ export class Player {
     }
 
     reset() {
-        this.x = 400;
-        this.y = 300;
+        // 設置玩家初始位置（確保在畫布範圍內）
+        const canvas = this.gameEngine.canvas;
+        if (canvas) {
+            this.x = Math.max(50, Math.min(400, canvas.width - 50));
+            this.y = Math.max(50, Math.min(300, canvas.height - 50));
+        } else {
+            this.x = 400;
+            this.y = 300;
+        }
+        console.log(`👤 玩家重置位置: (${this.x}, ${this.y}), 畫布大小: ${canvas ? canvas.width + 'x' + canvas.height : '未知'}`);
         this.velocity = { x: 0, y: 0 };
         this.health = this.maxHealth;
         this.energy = this.maxEnergy;
@@ -221,7 +229,15 @@ export class Player {
     }
 
     render(ctx) {
-        if (!this.isAlive) return;
+        if (!this.isAlive) {
+            console.log('👤 玩家已死亡，不渲染');
+            return;
+        }
+        
+        // 調試：確認渲染被調用
+        if (window.location.search.includes('debug=true')) {
+            console.log(`👤 渲染玩家於 (${this.x}, ${this.y})`);
+        }
         
         ctx.save();
         
@@ -341,7 +357,10 @@ export class Player {
     setInputState(key, pressed) {
         if (key in this.inputState) {
             this.inputState[key] = pressed;
-            console.log(`🎮 玩家輸入: ${key} = ${pressed}`);
+            // 只在調試模式下輸出輸入日誌
+            if (window.location.search.includes('debug=true')) {
+                console.log(`🎮 玩家輸入: ${key} = ${pressed}`);
+            }
         }
     }
 

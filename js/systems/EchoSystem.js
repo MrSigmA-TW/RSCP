@@ -168,13 +168,6 @@ export class EchoSystem {
 
     // 清除所有殘影
     clearAllEchoes() {
-        this.echoes = [];
-        this.clearRecording();
-        console.log('👻 清除所有殘影');
-    }
-
-    // 狀態管理
-    clearAllEchoes() {
         console.log('👻 清除所有殘影');
         this.echoes = [];
         this.isRecording = false;
