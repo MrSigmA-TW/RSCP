@@ -1,43 +1,94 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-<head> 
-    <meta charset="UTF-8"> 
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>時影雙行 — Shadow of Mine</title>
-    <link rel="stylesheet" href="style.css">
+    <title>時影雙行 Echo Trail</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/ui.css">
+    <link rel="stylesheet" href="styles/game.css">
 </head>
 <body>
-    <div class="start-screen" id="startScreen">
-        <div class="start-content">
-            <h1>《時影雙行》Shadow of Mine</h1>
-            <p>在一座時空錯亂的城市中，你是唯一還能穿梭過去的存在。透過殘影裝置，你將與「過去的自己」並肩合作，解開錯綜複雜的謎題，重塑命運的脈絡。這是一款融合橫向卷軸操作與時間分身策略的沉浸式平台遊戲。</p>
-            <p>每一次穿越，都將留下一段影子行動；而你，必須與這些殘影同步行動、互相配合，才能破解機關、戰勝敵人，甚至改變無法挽回的過去。</p>
-            <p>在「記憶」與「現實」交錯的路途中，時間不再只是過去與未來的界線，更是你與自己之間最深的羈絆。</p>
-            <button class="start-button" onclick="startGame()">開始遊戲</button>
-        </div>
-    </div>
-    <div id="gameContainer">
-        <div id="gameHeader">
-            <div id="ui">
-                <div>關卡進度: <span id="level">1</span>/5</div>
-                <div>當前回合: <span id="round">1</span></div>
-                <div>影子數量: <span id="echoCount">0</span>/5</div>
-                <div>總時間: <span id="totalTimer">0</span>s</div>
-            </div>
-            <div class="game-controls">
-                <div id="speedControl">
-                    <button onclick="setSpeed('slow')" class="speed-btn">慢速</button>
-                    <button onclick="setSpeed('normal')" class="speed-btn">中速</button>
-                    <button onclick="setSpeed('fast')" class="speed-btn">快速</button>
+    <div id="game-container">
+        <!-- 遊戲標題畫面 -->
+        <div id="title-screen" class="screen active">
+            <div class="title-content">
+                <h1 class="game-title">時影雙行</h1>
+                <h2 class="game-subtitle">Echo Trail</h2>
+                <div class="title-description">
+                    <p>在斷裂的時序都市「納赫拉姆」中</p>
+                    <p>與你的過去協作，尋找被遺忘的真相</p>
                 </div>
-                <div id="musicControl">
-                    <button onclick="toggleBGM()" id="bgmBtn">音樂：關</button>
-                    <button onclick="resetGame()" class="speed-btn">重置遊戲</button>
+                <div class="menu-buttons">
+                    <button id="start-game" class="menu-btn primary">開始遊戲</button>
+                    <button id="load-game" class="menu-btn">載入進度</button>
+                    <button id="settings" class="menu-btn">設定</button>
                 </div>
             </div>
         </div>
-        <canvas id="gameCanvas" width="1200" height="600"></canvas>
+
+        <!-- 遊戲主畫面 -->
+        <div id="game-screen" class="screen">
+            <div id="game-ui">
+                <!-- 頂部UI -->
+                <div id="top-ui">
+                    <div id="chapter-info">
+                        <span id="chapter-title">第一章：殘影初醒</span>
+                    </div>
+                    <div id="echo-counter">
+                        <span>殘影數量: <span id="echo-count">0</span></span>
+                    </div>
+                </div>
+
+                <!-- 遊戲世界 -->
+                <div id="game-world">
+                    <canvas id="game-canvas" width="800" height="600"></canvas>
+                    <div id="echo-overlay"></div>
+                </div>
+
+                <!-- 底部UI -->
+                <div id="bottom-ui">
+                    <div id="dialogue-box" class="hidden">
+                        <div id="speaker-name"></div>
+                        <div id="dialogue-text"></div>
+                        <div id="dialogue-choices"></div>
+                    </div>
+                    
+                    <div id="action-buttons">
+                        <button id="create-echo" class="action-btn">創建殘影</button>
+                        <button id="interact" class="action-btn">互動</button>
+                        <button id="menu" class="action-btn">選單</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 設定畫面 -->
+        <div id="settings-screen" class="screen">
+            <div class="settings-content">
+                <h2>遊戲設定</h2>
+                <div class="setting-item">
+                    <label>音效音量</label>
+                    <input type="range" id="sfx-volume" min="0" max="100" value="70">
+                </div>
+                <div class="setting-item">
+                    <label>背景音樂</label>
+                    <input type="range" id="bgm-volume" min="0" max="100" value="50">
+                </div>
+                <div class="setting-item">
+                    <label>文字速度</label>
+                    <select id="text-speed">
+                        <option value="slow">慢</option>
+                        <option value="normal" selected>普通</option>
+                        <option value="fast">快</option>
+                    </select>
+                </div>
+                <button id="back-to-title" class="menu-btn">返回主選單</button>
+            </div>
+        </div>
     </div>
-    <script src="game.js"></script>
+
+    <!-- 載入遊戲模組 -->
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

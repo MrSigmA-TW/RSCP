@@ -1,0 +1,303 @@
+/* UI介面樣式 */
+
+/* 遊戲UI容器 */
+#game-ui {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* 頂部UI */
+#top-ui {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(64, 224, 208, 0.3);
+    z-index: 100;
+}
+
+#chapter-info {
+    font-size: 1.2rem;
+    color: #40e0d0;
+    font-weight: bold;
+}
+
+#echo-counter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #e0e6ed;
+}
+
+#echo-count {
+    color: #8a2be2;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* 遊戲世界區域 */
+#game-world {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+#game-canvas {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a0a 100%);
+    border: none;
+}
+
+/* 殘影覆蓋層 */
+#echo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+}
+
+.echo-trail {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(64, 224, 208, 0.6) 0%, rgba(64, 224, 208, 0.1) 70%, transparent 100%);
+    animation: echoFade 2s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes echoFade {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.5);
+    }
+}
+
+/* 底部UI */
+#bottom-ui {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(15px);
+    border-top: 1px solid rgba(64, 224, 208, 0.3);
+    padding: 20px;
+    z-index: 100;
+}
+
+/* 對話框 */
+#dialogue-box {
+    background: rgba(10, 10, 10, 0.95);
+    border: 2px solid rgba(64, 224, 208, 0.5);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    min-height: 120px;
+    position: relative;
+    overflow: hidden;
+}
+
+#dialogue-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #40e0d0, transparent);
+    animation: scanLine 2s ease-in-out infinite;
+}
+
+@keyframes scanLine {
+    0%, 100% {
+        transform: translateX(-100%);
+    }
+    50% {
+        transform: translateX(100%);
+    }
+}
+
+#speaker-name {
+    color: #8a2be2;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+}
+
+#dialogue-text {
+    color: #e0e6ed;
+    line-height: 1.6;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    min-height: 60px;
+}
+
+#dialogue-choices {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.choice-btn {
+    padding: 8px 16px;
+    background: rgba(64, 224, 208, 0.1);
+    border: 1px solid rgba(64, 224, 208, 0.3);
+    color: #40e0d0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.choice-btn:hover {
+    background: rgba(64, 224, 208, 0.2);
+    border-color: #40e0d0;
+    transform: translateY(-1px);
+}
+
+/* 行動按鈕 */
+#action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.action-btn {
+    padding: 12px 24px;
+    background: rgba(138, 43, 226, 0.2);
+    border: 2px solid rgba(138, 43, 226, 0.5);
+    color: #e0e6ed;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.action-btn:hover::before {
+    left: 100%;
+}
+
+.action-btn:hover {
+    background: rgba(138, 43, 226, 0.3);
+    border-color: #8a2be2;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+}
+
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 設定畫面 */
+.settings-content {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(64, 224, 208, 0.3);
+    margin-top: 10vh;
+}
+
+.settings-content h2 {
+    color: #40e0d0;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+}
+
+.setting-item {
+    margin-bottom: 25px;
+}
+
+.setting-item label {
+    display: block;
+    color: #e0e6ed;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.setting-item input[type="range"] {
+    width: 100%;
+    height: 6px;
+    background: rgba(64, 224, 208, 0.2);
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #40e0d0;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(64, 224, 208, 0.5);
+}
+
+.setting-item select {
+    width: 100%;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(64, 224, 208, 0.3);
+    color: #e0e6ed;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    #top-ui {
+        padding: 15px;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    #action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .action-btn {
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .settings-content {
+        margin: 5vh 20px;
+        padding: 30px 20px;
+    }
+}
