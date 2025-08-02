@@ -140,6 +140,8 @@ export class GameEngine {
         this.startGameLoop();
         
         console.log('✅ 章節啟動完成，玩家應該可見');
+        console.log(`🎮 遊戲狀態: isPlaying=${this.gameState.isPlaying}, isRunning=${this.isRunning}`);
+        console.log(`👤 玩家狀態: 位置(${this.player.x}, ${this.player.y}), 存活=${this.player.isAlive}`);
     }
 
     startGameLoop() {
@@ -197,7 +199,9 @@ export class GameEngine {
         this.echoSystem.update(deltaTime);
         
         // 更新物理引擎
-        this.physicsEngine.update(deltaTime);
+        if (this.physicsEngine) {
+            this.physicsEngine.update(deltaTime);
+        }
         
         // 更新關卡
         this.levelManager.update(deltaTime);
@@ -221,7 +225,11 @@ export class GameEngine {
         this.echoSystem.render(this.ctx);
         
         // 渲染玩家
-        this.player.render(this.ctx);
+        if (this.player) {
+            this.player.render(this.ctx);
+        } else {
+            console.warn('⚠️ 玩家物件不存在，無法渲染');
+        }
         
         // 渲染UI覆蓋層
         this.renderUIOverlay();

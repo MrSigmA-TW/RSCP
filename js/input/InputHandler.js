@@ -171,7 +171,7 @@ export class InputHandler {
         player.setInputState('right', false);
         
         // 處理當前按下的鍵
-        for (const [key, action] of this.keyBindings) {
+        for (const [key, action] of Object.entries(this.keyBindings)) {
             if (this.isKeyPressed(key)) {
                 switch (action) {
                     case 'up':
@@ -621,3 +621,6 @@ export class InputHandler {
         console.log('🎮 輸入處理器已清理');
     }
 }
+
+// 導出 InputHandler 類別供其他模組使用
+// 注意：不導出全域實例，因為 InputHandler 需要 gameEngine 參數
