@@ -377,6 +377,11 @@ export class GameEngine {
     }
 
     checkGameConditions() {
+        // 確保遊戲已經開始且關卡已載入
+        if (!this.gameState.isPlaying || !this.levelManager.isLevelLoaded) {
+            return;
+        }
+        
         // 檢查關卡完成條件
         if (this.levelManager.isLevelComplete()) {
             this.completeLevel();

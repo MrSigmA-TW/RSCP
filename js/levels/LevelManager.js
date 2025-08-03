@@ -8,6 +8,7 @@ export class LevelManager {
         this.objects = [];
         this.triggers = [];
         this.isLevelLoaded = false;
+        this.isLevelCompleting = false;
         
         // 章節配置
         this.chapters = {
@@ -62,6 +63,12 @@ export class LevelManager {
     async loadChapter(chapterNumber) {
         console.log(`📖 載入第${chapterNumber}章`);
         
+        // 驗證章節號碼
+        if (!this.chapters[chapterNumber]) {
+            console.error(`❌ 無效的章節號碼: ${chapterNumber}，重設為第1章`);
+            chapterNumber = 1;
+        }
+        
         this.currentChapter = chapterNumber;
         this.currentLevel = 1;
         
@@ -71,6 +78,18 @@ export class LevelManager {
 
     async loadLevel(chapter, level) {
         console.log(`🗺️ 載入關卡 ${chapter}-${level}`);
+        
+        // 驗證章節和關卡號碼
+        if (!this.chapters[chapter]) {
+            console.error(`❌ 無效的章節號碼: ${chapter}，重設為第1章`);
+            chapter = 1;
+        }
+        
+        const chapterData = this.chapters[chapter];
+        if (level < 1 || level > chapterData.levels) {
+            console.error(`❌ 無效的關卡號碼: ${level}，重設為第1關`);
+            level = 1;
+        }
         
         this.currentChapter = chapter;
         this.currentLevel = level;
@@ -86,6 +105,7 @@ export class LevelManager {
         this.createLevelObjects();
         
         this.isLevelLoaded = true;
+        this.isLevelCompleting = false;
         
         // 播放關卡載入音效
         this.gameEngine.audioManager?.playSound('level-load');
@@ -392,12 +412,13 @@ export class LevelManager {
         if (!player) return;
         
         // 檢查是否到達目標點
-        if (this.levelData.goal) {
+        if (this.levelData.goal && !this.isLevelCompleting) {
             const dx = player.x - this.levelData.goal.x;
             const dy = player.y - this.levelData.goal.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (distance < 40) {
+                this.isLevelCompleting = true; // 防止重複觸發
                 this.completeLevel();
             }
         }
@@ -406,8 +427,21 @@ export class LevelManager {
     completeLevel() {
         console.log(`🎉 完成關卡 ${this.currentChapter}-${this.currentLevel}`);
         
+        // 調試信息：檢查當前狀態
+        console.log(`🔍 調試信息 - currentChapter: ${this.currentChapter}, currentLevel: ${this.currentLevel}`);
+        console.log(`🔍 可用章節:`, Object.keys(this.chapters));
+        
         // 檢查是否還有下一關
         const chapterData = this.chapters[this.currentChapter];
+        if (!chapterData) {
+            console.error(`❌ 嚴重錯誤：找不到第${this.currentChapter}章的數據！重設為第1章第1關`);
+            this.currentChapter = 1;
+            this.currentLevel = 1;
+            this.isLevelCompleting = false;
+            this.loadLevel(1, 1);
+            return;
+        }
+        
         if (this.currentLevel < chapterData.levels) {
             // 載入下一關
             setTimeout(() => {
@@ -477,6 +511,10 @@ export class LevelManager {
 
     isChapterComplete() {
         const chapterData = this.chapters[this.currentChapter];
+        if (!chapterData) {
+            console.warn(`⚠️ 找不到第${this.currentChapter}章的數據`);
+            return false;
+        }
         return this.currentLevel >= chapterData.levels;
     }
 
